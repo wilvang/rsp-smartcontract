@@ -25,6 +25,7 @@ contract RPSGame {
 
     // Events for EVM logging.
     event HiddenVote(address _player, bytes32 _hashedVote);
+    event RevealedVote(address _player, string _vote);
     event GameStart(address _player1, address _player2, uint _deadline);
 
     // Links each player to an address to ensure single entry.
@@ -85,5 +86,39 @@ contract RPSGame {
 
         // Logs the hidden vote to the player.
         emit HiddenVote(msg.sender, _hashedVote);
+    }
+
+    /**
+     * @notice To reveal the vote, the player must use
+     *         the same vote and salt used to create the hash.
+     * @dev Allows a player to reveal their vote.
+     *      The vote will be converted to uppercase if
+     *      it was originally in lowercase.
+     * @param _vote The vote of the player.
+     * @param _salt The salt used to hash the vote.
+     */
+    function reveal(string calldata _vote, string calldata _salt) public {
+
+        // Checks if the player has an opponent.
+        require(players[msg.sender].opponent != address(0), "Waiting for an opponent");
+
+        // Checks the integrity of the revealed vote.
+        bytes32 hash = keccak256(abi.encodePacked(_vote, _salt));
+        require(players[msg.sender].hashedVote == hash, "Not a valid vote");
+
+        bytes memory bStr = bytes(_vote); // Byte value of the character.
+
+        // Checks if the vote is lowercase.
+        if (bStr[0] >= 0x61 && bStr[0] <= 0x7A) {
+            // Convert to uppercase by subtracting 32
+            bStr[0] = bytes1(uint8(bStr[0]) - 32);
+        }
+
+        // Updates the player status.
+        players[msg.sender].revealed = true;
+        players[msg.sender].vote = string(bStr);
+
+        // Logs the vote to the player in plain text.
+        emit RevealedVote(msg.sender, string(bStr));
     }
 }
