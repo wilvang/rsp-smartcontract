@@ -23,10 +23,12 @@ contract RPSGame {
         uint deadline;       // The deadline to reveal the vote.
     }
 
+   
     // Events for EVM logging.
     event HiddenVote(address _player, bytes32 _hashedVote);
     event RevealedVote(address _player, string _vote);
     event GameStart(address _player1, address _player2, uint _deadline);
+    event Withdraw(address _winner, uint _amount);
 
     // Links each player to an address to ensure single entry.
     mapping(address => Player) public players;
@@ -120,5 +122,88 @@ contract RPSGame {
 
         // Logs the vote to the player in plain text.
         emit RevealedVote(msg.sender, string(bStr));
+    }
+
+    /**
+     * @notice You can only withdraw on victory, tie, or timeout of the deadline.
+     * @dev Allows a player to withdraw their stake if conditions are met.
+     */
+    function withdraw() public payable  {
+        // Checks if the player has revealed their vote.
+        require(players[msg.sender].revealed, "You must reveal your vote before withdrawal");
+
+        // Checks if the deadline is reached or the
+        // other player has revealed their vote.
+        require(
+            block.timestamp >= players[msg.sender].deadline ||
+            players[players[msg.sender].opponent].revealed,
+            "Waiting for opponent to reveal or deadline"
+        );
+
+        address opponent = players[msg.sender].opponent; // The opponent's address.
+        string memory vote1 = players[msg.sender].vote;  // The player's vote.
+        string memory vote2 = players[opponent].vote;    // The opponent's vote.
+
+        // Checks for either victory or timeout.
+        if (isWinner(vote1, vote2) || (block.timestamp >=
+        players[msg.sender].deadline && !players[opponent].revealed)) {
+            // Transfers the stakes to the winner.
+            payable(msg.sender).transfer(stake * 2);
+
+            // Removes the players from the game.
+            delete players[msg.sender];
+            delete players[opponent];
+
+            // Logs the withdrawal
+            emit Withdraw(msg.sender, stake * 2);
+
+        // Checks if there was a tie.
+        } else if (compareStrings(vote1, vote2)) {
+            // Transfers the stake back to each player.
+            payable(msg.sender).transfer(stake);
+            payable(opponent).transfer(stake);
+
+            // Removes the players from the game.
+            delete players[msg.sender];
+            delete players[opponent];
+
+            // Logs the withdrawals
+            emit Withdraw(msg.sender, stake);
+            emit Withdraw(opponent, stake);
+        }
+    }
+
+    /**
+     * @dev Compares two strings for equality.
+     * @param a The first string.
+     * @param b The second string.
+     * @return True if the strings are equal, false otherwise.
+     */
+    function compareStrings(string memory a, string memory b) public pure returns (bool) {
+        // Compares the hash values of two strings.
+        return (keccak256(abi.encodePacked((a))) == keccak256(abi.encodePacked((b))));
+    }
+
+    /**
+     * @dev Determines if the first vote is the winner.
+     * @param _vote1 The first vote.
+     * @param _vote2 The second vote.
+     * @return True if the first vote is the winner, false otherwise.
+     */
+    function isWinner(string memory _vote1, string memory _vote2) public pure returns(bool) {
+        // Checks if the vote is a valid choice.
+        require(compareStrings(_vote1, "R") || compareStrings(_vote1, "P") || compareStrings(_vote1, "S"),
+        "You did not choose rock, paper or scissors");
+        
+        // Both players chose the same option.
+        if (compareStrings(_vote1, _vote2) || compareStrings(_vote2, "")) return false;
+        // Paper beats rock
+        else if (compareStrings(_vote1, "R") && compareStrings(_vote2, "P")) return false;
+        // Scissor beats paper
+        else if (compareStrings(_vote1, "P") && compareStrings(_vote2, "S")) return false;
+        // Rock beats scissor
+        else if (compareStrings(_vote1, "S") && compareStrings(_vote2, "R")) return false;
+        // Victory to vote 1.
+        else  return true;
     }
 }
