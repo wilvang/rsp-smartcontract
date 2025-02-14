@@ -136,6 +136,19 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "minStake",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "bytes32",
@@ -199,6 +212,11 @@
 					},
 					{
 						"internalType": "uint256",
+						"name": "stake",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
 						"name": "deadline",
 						"type": "uint256"
 					}
@@ -227,19 +245,6 @@
 			{
 				"inputs": [],
 				"name": "revealTime",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "stake",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -316,7 +321,7 @@
 					"notice": "You can only withdraw on victory, tie, or timeout of the deadline."
 				}
 			},
-			"notice": "This contract allows players to participate in a Rock-Paper-Scissors game with a stake.         Players submit their hashed votes and later reveal them to determine the winner.         The gas fee for two player finishing a normal game where no unusual protocol violations .        happen is: 428 555 gas.",
+			"notice": "This contract allows players to participate in a Rock-Paper-Scissors game with a stake.         Players submit their hashed votes and later reveal them to determine the winner.         The gas fee for two player finishing a normal game where no unusual protocol violations         happen is: 428 555 gas.",
 			"version": 1
 		}
 	},
@@ -337,11 +342,11 @@
 	},
 	"sources": {
 		"contracts/RSPGame.sol": {
-			"keccak256": "0x2abaddd2413792f93740bbc9e5a2bfce29ebf5c9f77319fd9dc45fb4d8471467",
+			"keccak256": "0x6175910016a448fd26665e81d9363caa738237058ce0bfbf1340a53b5e04275f",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://b9c22f4bf3a4bee89ae812831a81b11e790cd9ce53b92450bde106972e68d4f1",
-				"dweb:/ipfs/QmRbiCz6wTkwh2TdpxhUM1rHsVuRgDq7qrCYnmz336xaSa"
+				"bzz-raw://7d7bbe9bada6fe3ab347aa8b11176f62f85586e4af2baf4fa84f26e10a6ee00d",
+				"dweb:/ipfs/QmTzQykAhwxvZmg8jMo2cuELiEPZLLCehUCsrK4NhzpriQ"
 			]
 		}
 	},
