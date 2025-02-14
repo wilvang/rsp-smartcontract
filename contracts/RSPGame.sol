@@ -8,6 +8,8 @@ pragma solidity >=0.7.0 <0.9.0;
  * @author Johan F. Wilvang
  * @notice This contract allows players to participate in a Rock-Paper-Scissors game with a stake.
  *         Players submit their hashed votes and later reveal them to determine the winner.
+ *         The gas fee for two player finishing a normal game where no unusual protocol violations
+ *         happen is: 402 588 gas.
  * @dev The contract handles player registration, vote submission, vote revealing, and stake withdrawal.
  */
 contract RPSGame {
@@ -20,6 +22,7 @@ contract RPSGame {
         bytes32 hashedVote;  // The vote hashed with salt.
         bool revealed;       // If true, the player's vote is revealed.
         address opponent;    // The address of the opponent.
+        uint stake;          // The stake of the game.
         uint deadline;       // The deadline to reveal the vote.
     }
 
@@ -32,9 +35,9 @@ contract RPSGame {
     // Links each player to an address to ensure single entry.
     mapping(address => Player) public players;
 
-    address[] public playerQueue;  // Queue of players waiting for an opponent.
-    uint public stake = 1 ether;   // Stake per player.
-    uint public revealTime = 480;  // 8 minutes in seconds.
+    address[] public playerQueue;         // Queue of players waiting for an opponent.
+    uint public minStake = 0.001 ether;   // Minimum stake per player.
+    uint public revealTime = 480;         // 8 minutes in seconds.
 
     /**
      * @notice The vote must be a valid character ('R', 'P', 'S')
@@ -44,7 +47,7 @@ contract RPSGame {
      * @dev Allows a player to join the game with a hashed vote.
      * @param _hashedVote The hashed vote of the player.
      */
-    function play(bytes32 _hashedVote) public payable isNewPlayer costs(stake) {
+    function play(bytes32 _hashedVote) public payable isNewPlayer costs(minStake) {
 
         // Creates a new player.
         players[msg.sender] = Player({
@@ -52,6 +55,7 @@ contract RPSGame {
             vote: "",
             revealed: false,
             opponent: address(0),
+            stake: 0,
             deadline: 0
         });
 
@@ -60,11 +64,21 @@ contract RPSGame {
         if (queueLength == 0) {
             // Adds the player to the waiting queue if empty.
             playerQueue.push(msg.sender);
+            players[msg.sender].stake = msg.value;
 
         } else {
-            // Selects the last player in the queue as the opponent
-            // and vice versa.
+            // Selects the last player in the queue as the opponent,
             address opponent = playerQueue[queueLength - 1];
+
+            // Requires the player to match the stake. and updates the players stake
+            require(msg.value >= players[opponent].stake,
+            "You need to match the opponents stake");
+            players[msg.sender].stake = players[opponent].stake;
+
+            // Refunds the overshooting amount to the player
+            payable(msg.sender).transfer(msg.value - players[opponent].stake);
+
+            // Links the player with the opponent.
             players[msg.sender].opponent = opponent;
             players[opponent].opponent = msg.sender;
 
@@ -123,28 +137,28 @@ contract RPSGame {
         if (isWinner(vote1, vote2) || (block.timestamp >=
         players[msg.sender].deadline && !players[opponent].revealed)) {
             // Transfers the stakes to the winner.
-            payable(msg.sender).transfer(stake * 2);
+            payable(msg.sender).transfer(players[msg.sender].stake * 2);
 
             // Removes the players from the game.
             delete players[msg.sender];
             delete players[opponent];
 
             // Logs the withdrawal
-            emit Withdraw(msg.sender, stake * 2);
+            emit Withdraw(msg.sender, players[msg.sender].stake * 2);
 
         // Checks if there was a tie.
         } else if (compareStrings(vote1, vote2)) {
             // Transfers the stake back to each player.
-            payable(msg.sender).transfer(stake);
-            payable(opponent).transfer(stake);
+            payable(msg.sender).transfer(players[msg.sender].stake);
+            payable(opponent).transfer(players[msg.sender].stake);
 
             // Removes the players from the game.
             delete players[msg.sender];
             delete players[opponent];
 
             // Logs the withdrawals
-            emit Withdraw(msg.sender, stake);
-            emit Withdraw(opponent, stake);
+            emit Withdraw(msg.sender, players[msg.sender].stake);
+            emit Withdraw(opponent, players[msg.sender].stake);
         }
     }
 
@@ -164,7 +178,7 @@ contract RPSGame {
      */
     modifier isNewPlayer() {
         // Checks if the player already is in a game.
-        require(players[msg.sender].hashedVote == 0, "You are already playing");
+        require(players[msg.sender].stake == 0, "You are already playing");
         _;
     }
 
@@ -174,7 +188,7 @@ contract RPSGame {
      */
     modifier costs(uint _amount) {
         // Checks if the player has paid the stake requirement.
-        require(msg.value >= stake, "The stake must be 1 Ether");
+        require(msg.value >= _amount, "The stake must be more than 0,0001 Ether");
         _;
     }
 

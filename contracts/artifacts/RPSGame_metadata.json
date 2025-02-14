@@ -1,0 +1,354 @@
+{
+	"compiler": {
+		"version": "0.8.26+commit.8a97fa7a"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "_player1",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "_player2",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "_deadline",
+						"type": "uint256"
+					}
+				],
+				"name": "GameStart",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "_player",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "bytes32",
+						"name": "_hashedVote",
+						"type": "bytes32"
+					}
+				],
+				"name": "HiddenVote",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "_player",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "_vote",
+						"type": "string"
+					}
+				],
+				"name": "RevealedVote",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "_winner",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "_amount",
+						"type": "uint256"
+					}
+				],
+				"name": "Withdraw",
+				"type": "event"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "a",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "b",
+						"type": "string"
+					}
+				],
+				"name": "compareStrings",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "pure",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "_vote1",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "_vote2",
+						"type": "string"
+					}
+				],
+				"name": "isWinner",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "pure",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "minStake",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "_hashedVote",
+						"type": "bytes32"
+					}
+				],
+				"name": "play",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "playerQueue",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "players",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "vote",
+						"type": "string"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "hashedVote",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "bool",
+						"name": "revealed",
+						"type": "bool"
+					},
+					{
+						"internalType": "address",
+						"name": "opponent",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "stake",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "deadline",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "_vote",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "_salt",
+						"type": "string"
+					}
+				],
+				"name": "reveal",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "revealTime",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "withdraw",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"author": "Johan F. Wilvang",
+			"details": "The contract handles player registration, vote submission, vote revealing, and stake withdrawal.",
+			"kind": "dev",
+			"methods": {
+				"compareStrings(string,string)": {
+					"details": "Compares two strings for equality.",
+					"params": {
+						"a": "The first string.",
+						"b": "The second string."
+					},
+					"returns": {
+						"_0": "True if the strings are equal, false otherwise."
+					}
+				},
+				"isWinner(string,string)": {
+					"details": "Determines if the first vote is the winner.",
+					"params": {
+						"_vote1": "The first vote.",
+						"_vote2": "The second vote."
+					},
+					"returns": {
+						"_0": "True if the first vote is the winner, false otherwise."
+					}
+				},
+				"play(bytes32)": {
+					"details": "Allows a player to join the game with a hashed vote.",
+					"params": {
+						"_hashedVote": "The hashed vote of the player."
+					}
+				},
+				"reveal(string,string)": {
+					"details": "Allows a player to reveal their vote.      The vote will be converted to uppercase if      it was originally in lowercase.",
+					"params": {
+						"_salt": "The salt used to hash the vote.",
+						"_vote": "The vote of the player."
+					}
+				},
+				"withdraw()": {
+					"details": "Allows a player to withdraw their stake if conditions are met."
+				}
+			},
+			"title": "Rock-Paper-Scissors Game Contract",
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {
+				"play(bytes32)": {
+					"notice": "The vote must be a valid character ('R', 'P', 'S')         and be concatenated with salt. The hashing         algorithm to be used is keccak256.The player must deposit a stake of 1 Ether to join."
+				},
+				"reveal(string,string)": {
+					"notice": "To reveal the vote, the player must use         the same vote and salt used to create the hash."
+				},
+				"withdraw()": {
+					"notice": "You can only withdraw on victory, tie, or timeout of the deadline."
+				}
+			},
+			"notice": "This contract allows players to participate in a Rock-Paper-Scissors game with a stake.         Players submit their hashed votes and later reveal them to determine the winner.         The gas fee for two player finishing a normal game where no unusual protocol violations         happen is: 402 588 gas.",
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/RSPGame.sol": "RPSGame"
+		},
+		"evmVersion": "cancun",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"contracts/RSPGame.sol": {
+			"keccak256": "0x97f4b28695547728e8dbcdc09261a954779ca0120f43d2bc52f922d9f4665f44",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://0c27c4560d3ab3fd1f66761cad8167c6c0c0a40ac07d0ab75668e1aeb2db95e8",
+				"dweb:/ipfs/QmWeKgEWmrhcFbBEE5avNouVwLaJ54p34CLJgysGY4VPb1"
+			]
+		}
+	},
+	"version": 1
+}
