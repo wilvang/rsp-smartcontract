@@ -9,7 +9,7 @@ pragma solidity >=0.7.0 <0.9.0;
  * @notice This contract allows players to participate in a Rock-Paper-Scissors game with a stake.
  *         Players submit their hashed votes and later reveal them to determine the winner.
  *         The gas fee for two player finishing a normal game where no unusual protocol violations
- *         happen is: 428 555 gas.
+ *         happen is: 402 588 gas.
  * @dev The contract handles player registration, vote submission, vote revealing, and stake withdrawal.
  */
 contract RPSGame {

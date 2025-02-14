@@ -321,7 +321,7 @@
 					"notice": "You can only withdraw on victory, tie, or timeout of the deadline."
 				}
 			},
-			"notice": "This contract allows players to participate in a Rock-Paper-Scissors game with a stake.         Players submit their hashed votes and later reveal them to determine the winner.         The gas fee for two player finishing a normal game where no unusual protocol violations         happen is: 428 555 gas.",
+			"notice": "This contract allows players to participate in a Rock-Paper-Scissors game with a stake.         Players submit their hashed votes and later reveal them to determine the winner.         The gas fee for two player finishing a normal game where no unusual protocol violations         happen is: 402 588 gas.",
 			"version": 1
 		}
 	},
@@ -342,11 +342,11 @@
 	},
 	"sources": {
 		"contracts/RSPGame.sol": {
-			"keccak256": "0x6175910016a448fd26665e81d9363caa738237058ce0bfbf1340a53b5e04275f",
+			"keccak256": "0x97f4b28695547728e8dbcdc09261a954779ca0120f43d2bc52f922d9f4665f44",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://7d7bbe9bada6fe3ab347aa8b11176f62f85586e4af2baf4fa84f26e10a6ee00d",
-				"dweb:/ipfs/QmTzQykAhwxvZmg8jMo2cuELiEPZLLCehUCsrK4NhzpriQ"
+				"bzz-raw://0c27c4560d3ab3fd1f66761cad8167c6c0c0a40ac07d0ab75668e1aeb2db95e8",
+				"dweb:/ipfs/QmWeKgEWmrhcFbBEE5avNouVwLaJ54p34CLJgysGY4VPb1"
 			]
 		}
 	},
